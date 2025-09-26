@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 declare global {
@@ -9,11 +9,14 @@ declare global {
 }
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     const initializeChannelTalk = () => {
       if (window.ChannelIO) {
         // Channel Talk 이벤트 리스너 설정
         window.ChannelIO('onShowMessenger', () => {
+          setIsLoading(false); // 메신저가 열리면 로딩 숨기기
           if (window.flutter_inappwebview) {
             window.flutter_inappwebview.callHandler('channelTalkOpened');
           }
@@ -58,12 +61,12 @@ function App() {
 
   return (
     <div className="app">
-      {/* 최소한의 UI - Channel Talk만 보이도록 */}
-      <div className="channel-talk-container">
-        <div className="placeholder-text">
-          Channel Talk
+      {isLoading && (
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <div className="loading-text">Channel Talk 로딩 중...</div>
         </div>
-      </div>
+      )}
     </div>
   )
 }
